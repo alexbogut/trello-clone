@@ -57,7 +57,7 @@ router.post("/api/org/:orgId/user", async (req, res) => {
         connect: { id: req.params.orgId }
       },
     }
-});
+  });
   res.json(user);
 });
 //ADD new User to an Organization
@@ -86,6 +86,33 @@ router.get("/api/org/:orgId/user/:userId/boards/:boardId", async (req, res) => {
 //GET a board based on url param with an array of "lists", where each list has an array of "cards"
 
 router.put("/api/org/:orgId/user/:userId/boards/:boardId", async (req, res) => {
+  if (req.query.reordercards === '1') {
+    let updatedCards = []
+    for (const newCard of req.body.newCards) {
+      const card = await prisma.card.update({
+        where: { id: newCard.id },
+        data: {
+          order: newCard.order,
+          List: { connect: { id: newCard.listId } }
+        },
+      });
+      updatedCards.push(card)
+    }
+    return res.json(updatedCards);
+  }
+
+  if (req.query.reorderlists === '1') {
+    let updatedLists = []
+    for (const newList of req.body.newLists) {
+      const list = await prisma.list.update({
+        where: { id: newList.id },
+        data: { order: newList.order }
+      });
+      updatedLists.push(list)
+    }
+    return res.json(updatedLists);
+  }
+
   const board = await prisma.board.update({
     where: { id: req.params.boardId },
     data: req.body,

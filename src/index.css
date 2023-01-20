@@ -281,6 +281,7 @@ nav span {
   border-radius: 6px;
   position: relative;
   margin: 10px 10px 10px 10px;
+  overflow-y: scroll;
 }
 
 .workflow-item:hover {
@@ -438,22 +439,24 @@ nav span {
 }
 
 .add-card-section {
-  position: absolute;
+  position: sticky;
+  width: 100%;
   bottom: 0;
   display: block;
-  width: 100%;
+  z-index: 3;
 }
 
 .add-card-btn {
   width: 100%;
-  opacity: 0.7;
   padding: 2.5%;
   border-radius: 6px;
+  background-color: #c7c7c7;
 }
 
 .add-card-btn:hover {
   opacity: 1;
-  background-color: #c7c7c7;
+  background-color: #3c3c3c;
+  color:white;
   cursor: pointer;
 }
 
@@ -487,18 +490,19 @@ nav span {
 /* CardDetail */
 
 .card-detail-box {
-  position: absolute;
+  position: fixed;
+  right: 50%;
+  top: 25%;
   background: #f3f6f8;
   min-width: 400px;
   min-height: 400px;
   overflow-y: scroll;
   height: auto;
   border-radius: 5px;
-  border: 19px solid #0369a6;
-  top: -150%;
-  z-index: 2;
-  padding: 5% 10% 10% 15%;
+  border: 9px solid #0369a6;
+  padding: 2.5% 2.5% 2.5% 2.5%;
   cursor: auto;
+  z-index: 4;
 }
 
 .card-detail-box h5 {
@@ -539,10 +543,6 @@ nav span {
   margin-right: 5px;
 }
 
-.card-detail-members {
-  background-color: green;
-}
-
 .card-detail-add-members {
   background-color: #d2d2d2;
   padding-bottom: 8%;
@@ -550,6 +550,73 @@ nav span {
 
 .card-detail-add-members:hover {
   background-color: #a8a8a8;
+}
+
+.add-members-box{
+  display: flex;
+  flex-direction: row;
+  position: relative;
+}
+
+.close-members-list{
+  font-size: 1.4em;
+  position: absolute;
+  right: 0;
+  top: 0;
+  z-index:2;
+}
+
+.list-of-members{
+  background: rgb(174, 209, 239);
+  width: 75%;
+  height: auto;
+  border: 4px solid #0369a6;
+  position: absolute;
+  top: 20px;
+  z-index: 2;
+  right: 0;
+}
+
+.list-of-members hr{
+  margin-top: -2%;
+  margin-bottom: 1%;
+}
+
+.list-of-members ul{
+  padding: 0;
+}
+.list-of-members li:first-of-type:hover{
+  background-color: unset;
+  cursor: unset;
+  width: 50%;
+}
+
+
+.list-of-members li{
+  list-style: none;
+  height: 40px;
+  line-height: 40px;
+  padding: 1% 2% 1% 2%;
+  margin: 0;
+  align-items: center;
+}
+
+.list-of-members li:hover{
+  background-color: #a8a8a8;
+  cursor: pointer;
+}
+
+.initials-circle{
+  border-radius: 50%;
+  width: 35%;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-weight: 500;
+  margin-right: 5px;
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
 }
 
 .card-detail-box label {
@@ -600,6 +667,19 @@ nav span {
   height: 20px;
   margin-bottom: 10px;
   line-height: 20px;
+}
+
+.initials-circle-comment{
+  border-radius: 50%;
+  width: 35%;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-weight: 500;
+  margin-right: 5px;
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
 }
 
 .delete-comment {

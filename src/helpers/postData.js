@@ -16,7 +16,7 @@ export const postComment = async (cardId, commentToPost, userId) => {
         }
       )
       .then((response) => {
-        console.log(response.data);
+        // console.log(response.data);
       });
   }
   catch (e) {
@@ -32,10 +32,11 @@ export const postComment = async (cardId, commentToPost, userId) => {
        `${BASE_URL}api/org/:orgId/user/:userId/boards/${boardId}/lists/${listId}/cards`,
        {
          title: cardToPost,
+         order: order
        }
      )
      .then((response) => {
-       console.log(response.data);
+      //  console.log(response.data);
      });
   }
   catch (e) {
@@ -104,7 +105,7 @@ export const updateBoard = async (boardId, newTitle) => {
   }
 }
 
-export const updateCard = async (cardId, newCard, newDescription) => {
+export const updateCard = async (cardId, newCard) => {
   try {
     const response = await axios.put(
       `${BASE_URL}api/org/:orgId/user/:userId/boards/:boardId/lists/:listId/cards/${cardId}`,
@@ -126,6 +127,22 @@ export const updateCardDescription = async (cardId, newDescription) => {
       `${BASE_URL}api/org/:orgId/user/:userId/boards/:boardId/lists/:listId/cards/${cardId}`,
       {
         description: newDescription,
+      }
+    );
+    return response.data
+  }
+  catch (e) {
+    console.error('Error in updating card', e);
+    throw e;
+  }
+}
+
+export const addMemberToCard = async (cardId, newMember) => {
+  try {
+    const response = await axios.put(
+      `${BASE_URL}api/org/:orgId/user/:userId/boards/:boardId/lists/:listId/cards/${cardId}`,
+      {
+        members: newMember,
       }
     );
     return response.data

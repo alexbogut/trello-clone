@@ -1,5 +1,4 @@
 import {
-  CHANGE_LOGIN_STATUS,
   STORE_BOARD_DETAILS,
   STORE_HOMESCREEN,
   STORE_CARD_DETAILS,
@@ -43,7 +42,7 @@ export const localLogin = (event, callback) => dispatch => {
 
 export const logout = () => dispatch => {
   localStorage.removeItem('token');
-  dispatch({type: REMOVE_USER})
+  dispatch({ type: REMOVE_USER })
 }
 
 export const fetchUser = (errorCb) => dispatch => {
@@ -84,18 +83,49 @@ export const storeCardDetails = (cardDetails) => {
   }
 }
 
-export const reOrderCards = (newCards) => {
-  return {
+export const reOrderCards = (newCards, boardId) => dispatch => {
+  dispatch({
     type: REORDER_CARDS,
     payload: newCards,
-  }
+  });
+
+  axios.put(
+    `${BASE_URL}api/org/:orgId/user/:userId/boards/${boardId}?reordercards=1`,
+    {
+      newCards
+    }
+  )
+    .then(response => {
+      dispatch({
+        type: REORDER_CARDS,
+        payload: response.data,
+      })
+    })
+    .catch(err => {
+      console.error('Error in updating card', err);
+      throw err;
+    })
 }
 
-export const reOrderLists = (newLists) => {
-  return {
+export const reOrderLists = (newLists, boardId) => dispatch => {
+  dispatch({
     type: REORDER_LISTS,
     payload: newLists,
-  }
+  });
+
+  axios.put(
+    `${BASE_URL}api/org/:orgId/user/:userId/boards/${boardId}?reorderlists=1`,
+    {
+      newLists
+    }
+  )
+    .then(response => {
+      dispatch({
+        type: REORDER_LISTS,
+        payload: response.data,
+      })
+    })
+    .catch(err => console.log(err))
 }
 
 export const updateBoardTitle = (newTitle) => {
@@ -107,17 +137,18 @@ export const updateBoardTitle = (newTitle) => {
 
 export const addCard = (listId, cardToPost, boardId, order) => dispatch => {
   dispatch({
-    type: ADD_CARD, 
+    type: ADD_CARD,
     payload: {
-      boardId, 
-      description: null, 
-      label: null, 
-      listId, 
-      members: [], 
-      order, 
+      boardId,
+      description: null,
+      label: null,
+      listId,
+      members: [],
+      order,
       title: cardToPost
-    }})
-  
+    }
+  })
+
   axios
     .post(
       `${BASE_URL}api/org/:orgId/user/:userId/boards/${boardId}/lists/${listId}/cards`,
