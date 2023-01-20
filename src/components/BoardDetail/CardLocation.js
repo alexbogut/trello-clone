@@ -4,7 +4,7 @@ import {useState, useEffect} from 'react'
 import {useDispatch, useSelector} from 'react-redux'
 import {reOrderCards} from '../../actions'
 
-function CardLocation ({index, setIsPostingCardDetails, listId, listName, boardId}){
+function CardLocation ({index, listId, listName, boardId}){
 
   const {cards, id} = useSelector((state) =>state?.boardDetails)
   const dispatch = useDispatch();
@@ -57,7 +57,8 @@ function CardLocation ({index, setIsPostingCardDetails, listId, listName, boardI
         }
         else return i
     })
-    console.log(nextCards)    
+    const orders = nextCards.map((i)=>i.order)
+    console.log(orders)    
     dispatch(reOrderCards(nextCards))
     },
 });
@@ -69,7 +70,7 @@ return (
     <div ref={drop} className='card-location' id={index}>
     {cards?.map((i) => {
       if (i?.listId === listId && i?.order === index) {
-        return <Card order={index} key={i.id} title={i.title} cardId={i.id} listId={i.listId} description={i.description} listName={listName} comments={i.comments} setIsPostingCardDetails={setIsPostingCardDetails} boardId={boardId}/>
+        return <Card cardMembers={i.members} order={index} key={i.id} title={i.title} cardId={i.id} listId={i.listId} description={i.description} listName={listName} comments={i.comments} boardId={boardId}/>
       }
       if(i?.order === index){
       return <div className='empty-div'></div>

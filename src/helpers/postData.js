@@ -5,26 +5,6 @@ axios.defaults.headers.common['Authorization'] = "Bearer " + localStorage.getIte
 
 
 
-export const postComment = async (cardId, commentToPost, userId) => {
-  if (commentToPost.length < 1) return
-  try {
-    await axios
-      .post(
-        `${BASE_URL}api/org/:orgId/user/${userId}/boards/:boardId/lists/:listId/cards/${cardId}/comments`,
-        {
-          text: commentToPost,
-        }
-      )
-      .then((response) => {
-        // console.log(response.data);
-      });
-  }
-  catch (e) {
-    console.error('Error in posting comment', e);
-    throw e;
-  }
-}
-
   export const postCard = async (listId, cardToPost, boardId, order) => {
     try{
    await axios
@@ -121,36 +101,5 @@ export const updateCard = async (cardId, newCard) => {
   }
 }
 
-export const updateCardDescription = async (cardId, newDescription) => {
-  try {
-    const response = await axios.put(
-      `${BASE_URL}api/org/:orgId/user/:userId/boards/:boardId/lists/:listId/cards/${cardId}`,
-      {
-        description: newDescription,
-      }
-    );
-    return response.data
-  }
-  catch (e) {
-    console.error('Error in updating card', e);
-    throw e;
-  }
-}
-
-export const addMemberToCard = async (cardId, newMember) => {
-  try {
-    const response = await axios.put(
-      `${BASE_URL}api/org/:orgId/user/:userId/boards/:boardId/lists/:listId/cards/${cardId}`,
-      {
-        members: newMember,
-      }
-    );
-    return response.data
-  }
-  catch (e) {
-    console.error('Error in updating card', e);
-    throw e;
-  }
-}
 
 

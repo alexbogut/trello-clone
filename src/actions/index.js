@@ -145,7 +145,8 @@ export const addCard = (listId, cardToPost, boardId, order) => dispatch => {
       listId,
       members: [],
       order,
-      title: cardToPost
+      title: cardToPost,
+      comments: [],
     }
   })
 

@@ -8,17 +8,14 @@ import { postCard } from '../../helpers/postData'
 import { deleteList } from '../../actions/delete-actions';
 import { addCard, reOrderLists } from '../../actions';
 
-function WorkflowList({ description, listOrder, id, setIsPostingCardDetails, setListId, boardId, lists }) {
+function WorkflowList({ description, listOrder, id, boardId, lists }) {
   const dispatch = useDispatch();
   const cards = useSelector((state) => state?.boardDetails?.cards)
   const [newCard, setNewCard] = useState('')
-  const [newCardOrder, setNewCardOrder] = useState(0)
   const [isComposingCard, setIsComposingCard] = useState(false)
 
   async function postNewCard() {
     try {
-      // setIsPostingCardDetails(true)
-
       const numCardsInList = cards.reduce((count, card) => {
         if (card.listId === id) { count++ };
         return count;
@@ -33,14 +30,11 @@ function WorkflowList({ description, listOrder, id, setIsPostingCardDetails, set
     finally {
       setNewCard('')
       setIsComposingCard(false)
-      // setIsPostingCardDetails(false)
     }
   }
 
   function deleteThisList() {
     try {
-      setIsPostingCardDetails(true)
-
       let newLists = _.remove(lists, (list => {
         //this makes it so that we have a new array of lists without the delted list
         //so that we can call reOrderLists later
@@ -59,9 +53,6 @@ function WorkflowList({ description, listOrder, id, setIsPostingCardDetails, set
     }
     catch (e) {
       console.error(e)
-    }
-    finally {
-      // setIsPostingCardDetails(false)
     }
   }
 
@@ -98,7 +89,7 @@ function WorkflowList({ description, listOrder, id, setIsPostingCardDetails, set
         <Trash3Fill onClick={() => deleteThisList()} className="icn delete-list-icn" />
         <ul className="list-ul" >
           {cards?.map((element, index) => {
-            return <CardLocation key={element.id} index={index} listName={description} setIsPostingCardDetails={setIsPostingCardDetails} listId={id} boardId={boardId} />
+            return <CardLocation key={element.id} index={index} listName={description} listId={id} boardId={boardId} />
           })}
         </ul>
       </div>

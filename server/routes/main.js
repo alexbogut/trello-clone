@@ -78,7 +78,11 @@ router.get("/api/org/:orgId/user/:userId/boards/:boardId", async (req, res) => {
     where: { id: req.params.boardId },
     include: {
       lists: true,
-      cards: true,
+      cards: {
+        include: {
+          comments: true,
+        }
+      },
     },
   });
   res.json(board);

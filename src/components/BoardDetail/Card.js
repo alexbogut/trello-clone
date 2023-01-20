@@ -7,20 +7,59 @@ import CardDetail from './CardDetail/CardDetail'
 import { deleteCard } from '../../actions/delete-actions'
 import { updateCard } from '../../helpers/postData'
 import { ThreeDots } from 'react-loader-spinner'
-import { reOrderCards } from '../../actions'
+import { reOrderCards, storeBoardDetails, storeHomescreen } from '../../actions'
+import { fetchBoardDetails } from '../../helpers/fetchData';
+import { fetchHomescreen } from '../../helpers/fetchData'
 
-
-const Card = ({ order, title, cardId, listId, description, listName, setIsPostingCardDetails, boardId }) => {
+const Card = ({ order, title, cardId, listId, description, listName, boardId, cardMembers, comments }) => {
   const dispatch = useDispatch();
   const [cardTitle, setCardTitle] = useState(title)
   const [isEditingTitle, setIsEditingTitle] = useState(false)
   const [existsTitleToChange, setExistsTitleToChange] = useState(false)
-  const [isEditingDescription, setIsEditingDescription] = useState(false)
   const [isUpdating, setIsUpdating] = useState(false)
-  const [isOpen, setIsOpen] = useState(false)
   const [isDeleting, setIsDeleting] = useState(false)
-  const [thisCardId, setThisCardId] = useState('')
-  const { cards } = useSelector(state => state.boardDetails)
+  const [selectedCardId, setSelectedCardId] = useState(null)
+  const [existsDataToRender, setExistsDataToRender] = useState(false)
+  const [membersWithColors, setMembersWithColors] = useState([])
+  const memberColors = ['bisque', 'darkcyan', 'darkgoldenrod', 'darkolivegreen' ]
+  const userId = useSelector((state)=> state?.auth?.userId)
+  const members = useSelector((state) => state.homescreen.org?.members)
+  const {cards} = useSelector((state) => state.boardDetails)
+
+  console.log(cardMembers)
+  useEffect(()=>{
+    if(!members) return
+    const membersToColors = members.map((i, index)=>{
+      return {...i, color: memberColors[index]}
+    })
+    setMembersWithColors(membersToColors)
+    },[members])
+
+  function lookUpColor(name){
+      if(!name) return
+      if(membersWithColors===[]) return
+      const user = membersWithColors.find((i)=> i.name === name)
+      if(!user) return
+      const userColor = user.color
+      return userColor
+    }
+
+  useEffect(()=>{
+    async function fetchData() {
+      try{
+        if(userId){
+        const homescreen = await fetchHomescreen(userId)
+        dispatch(storeHomescreen(homescreen))
+        }
+      }
+      catch (error) {
+        console.log(error)
+    } finally {
+        console.log('done')
+    }
+  }
+    fetchData()
+  },[])
 
   //make card draggable
   const [{ opacity }, dragRef] = useDrag(
@@ -34,6 +73,24 @@ const Card = ({ order, title, cardId, listId, description, listName, setIsPostin
     []
   )
 
+  useEffect(() => {
+    const getData = async () => {
+      try{
+          const boardDetails = await fetchBoardDetails(boardId)
+          dispatch(storeBoardDetails(boardDetails))
+      }
+      catch(e){
+        console.error(e)
+      }
+      finally{
+        setExistsDataToRender(false)
+      }
+    }
+    if(!existsDataToRender) return 
+    getData();
+    return;
+  }, [existsDataToRender]);
+
   // DELETE card
   const handleCardDelete = (cards) => {
     try {
@@ -45,8 +102,6 @@ const Card = ({ order, title, cardId, listId, description, listName, setIsPostin
         }
         return card.id !== cardId
       }));
-
-      setIsPostingCardDetails(true)
       setIsDeleting(true)
 
       dispatch(deleteCard(cardId, order));
@@ -60,7 +115,6 @@ const Card = ({ order, title, cardId, listId, description, listName, setIsPostin
       console.error(e)
     }
     finally {
-      setIsPostingCardDetails(false)
       setIsDeleting(false)
     }
   }
@@ -69,7 +123,6 @@ const Card = ({ order, title, cardId, listId, description, listName, setIsPostin
   useEffect(() => {
     async function postData() {
       try {
-        setIsPostingCardDetails(true)
         setIsUpdating(true)
         await updateCard(cardId, cardTitle)
       }
@@ -79,7 +132,6 @@ const Card = ({ order, title, cardId, listId, description, listName, setIsPostin
       finally {
         setIsEditingTitle(false)
         setIsUpdating(false)
-        setIsPostingCardDetails(false)
         setExistsTitleToChange(false)
       }
     }
@@ -92,10 +144,18 @@ const Card = ({ order, title, cardId, listId, description, listName, setIsPostin
   return (
     <div className="card-item" ref={dragRef} style={{ opacity }}>
       <div style={{ display: isEditingTitle ? 'none' : 'block', }}>
-        <div className='open-card-detail-target' onClick={() => setIsOpen(true)}>
+        <div className='open-card-detail-target' onClick={(e) =>
+          setSelectedCardId(cardId)}>
           <div  >
             {cardTitle}
           </div>
+          {cardMembers!==[] ? <div className='card-circles-container'>
+            {cardMembers.map((i)=>{
+              const [firstName, lastName] = i.split(" ");
+              const initials = firstName[0] + lastName[0];
+              return <span  className="initials-circle-card" style={{backgroundColor: lookUpColor(i)}}>{initials}</span>
+            })}
+          </div> : null}
           {isDeleting || isUpdating ? null : <div>
             <Pencil onClick={(e) => {
               e.stopPropagation();
@@ -107,10 +167,10 @@ const Card = ({ order, title, cardId, listId, description, listName, setIsPostin
             }} className="icn delete-card-icn card-icn" />
           </div>}
           {isDeleting || isUpdating ? <div className='loader'><ThreeDots color="black" /></div> : null}
-          <div className='comments-length'><Chat /><span></span></div>
+          <div className='comments-length'><Chat /><span>{comments?.length}</span></div>
         </div>
       </div>
-      <CardDetail listId={listId} isOpen={isOpen} setIsOpen={setIsOpen} cardId={cardId} listName={listName} boardId={boardId} />
+      {selectedCardId===cardId ? <CardDetail setExistsDataToRender={setExistsDataToRender} setSelectedCardId={setSelectedCardId} selectedCardId={selectedCardId} listId={listId} cardId={cardId} listName={listName} boardId={boardId} /> : null}
       <div className='card-title-editor' style={{ display: isEditingTitle ? 'flex' : 'none', }}>
         <input type="text" value={cardTitle} onChange={(e) => setCardTitle(e.target.value)}></input>
         <button className='btn btn-primary' onClick={() => setExistsTitleToChange(true)}>Save</button>

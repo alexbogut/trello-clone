@@ -27,7 +27,6 @@ function BoardDetail() {
   const [isCreating, setIsCreating] = useState(false)
   const [newListValue, setNewListValue] = useState('')
   const [newList, setNewList] = useState('')
-  const [isPostingCardDetails, setIsPostingCardDetails] = useState(false)
   const handleClose = () => setShow(false);
   const handleShow = () => setShow(true);
   const navigate = useNavigate();
@@ -52,22 +51,6 @@ function BoardDetail() {
   useEffect(()=>{
     setCurrentTitle(title)
   },[isLoading])
-
-  //GET data after card has been renamed
-  // useEffect(() => {
-  //   async function fetchData() {
-  //     try {
-  //       const boardDetails = await fetchBoardDetails(boardId)
-  //       dispatch(storeBoardDetails(boardDetails))
-  //     }
-  //     catch (error) {
-  //       console.log(error)
-  //     } finally {
-  //       setIsPostingCardDetails(false)
-  //     }
-  //   }
-  //   fetchData()
-  // }, [isPostingCardDetails])
 
   //update title
   const handleTitleChange = async (title) => {
@@ -98,13 +81,11 @@ function BoardDetail() {
   useEffect(() => {
     async function postData() {
       try {
-        setIsPostingCardDetails(true)
         await postList(boardId, newList, thisState.lists.length - 1);
       }
       catch (error) {
         console.log(error)
       } finally {
-        setIsPostingCardDetails(false)
         setNewListValue('')
       }
     }
@@ -115,26 +96,22 @@ function BoardDetail() {
 
   const handleCreateList = () => {
     try {
-      setIsPostingCardDetails(true)
       dispatch(postList(boardId, newListValue, thisState.lists.length));
     }
     catch (error) {
       console.log(error)
     } finally {
-      setIsPostingCardDetails(false)
       setNewListValue('')
     }
 }
 
 // const handleCreateList = () => {
 //   try {
-//     setIsPostingCardDetails(true)
 //     await postList(boardId, newList)
 //   }
 //   catch (error) {
 //     console.log(error)
 //   } finally {
-//     setIsPostingCardDetails(false)
 //     setNewListValue('')
 //   }
 // }
@@ -176,7 +153,7 @@ return (
     <DndProvider backend={HTML5Backend}>
       <div className='workflow-box'>
         {workflows?.map((i, index) => {
-          return <ListLocation workflows={workflows} listOrder={index} boardId={boardId} key={i.id} setIsPostingCardDetails={setIsPostingCardDetails}/>
+          return <ListLocation workflows={workflows} listOrder={index} boardId={boardId} key={i.id}/>
         })}
         <div className='new-workflow-trigger'><button className="btn new-workflow-btn" onClick={() => setIsCreating(true)} style={{ display: isCreating ? 'none' : 'block' }}>Create new list<PatchPlus className="icn add-list-icon" /></button>
           <div className='new-workflow-box' style={{ display: isCreating ? 'block' : 'none', }}>

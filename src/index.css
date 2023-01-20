@@ -276,6 +276,7 @@ nav span {
 .workflow-item {
   background: #ebecf0;
   min-width: 270px;
+  max-width: 300px;
   max-height: 400px;
   height: auto;
   border-radius: 6px;
@@ -411,6 +412,27 @@ nav span {
   color: red;
 }
 
+.initials-circle-card{
+  border-radius: 50%;
+  width: 35%;
+  width: 30px;
+  height: 30px;
+  line-height: 30px;
+  font-weight: 500;
+  margin-right: 5px;
+  display: inline-flex;
+  justify-content: center;
+  text-align: center;
+}
+
+.card-circles-container{
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  display: flex;
+  flex-direction: row;
+}
+
 .comments-length {
   font-size: 0.75em;
   display: flex;
@@ -495,6 +517,7 @@ nav span {
   top: 25%;
   background: #f3f6f8;
   min-width: 400px;
+  max-width: 500px;
   min-height: 400px;
   overflow-y: scroll;
   height: auto;
@@ -541,6 +564,34 @@ nav span {
   line-height: 30px;
   font-weight: 500;
   margin-right: 5px;
+}
+
+.remove-members-box{
+  position: absolute;
+  width: 75px !important;
+  height: 75px !important;
+  border-radius: 5px !important;
+  background:white;
+  top: -60px;
+}
+
+.close-remove-members{
+  position: absolute;
+  top: 0;
+  right: 0;
+  font-size: 1.4em;
+}
+
+.remove-members-box button{
+  height: 40px;
+  position: absolute;
+  bottom: 5%;
+  text-align: center;
+  align-items: center;
+  display: flex;
+  font-size: .75em;
+  width: 75px;
+  left: 0;
 }
 
 .card-detail-add-members {

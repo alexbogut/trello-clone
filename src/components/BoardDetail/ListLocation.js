@@ -3,7 +3,7 @@ import {useDrop} from 'react-dnd'
 import {useDispatch, useSelector} from 'react-redux'
 import {reOrderLists} from '../../actions'
 
-function ListLocation({boardId, setIsPostingCardDetails, workflows, listOrder }) {
+function ListLocation({boardId, workflows, listOrder }) {
     const dispatch = useDispatch();
     const { id } = useSelector(state => state.boardDetails)
 
@@ -40,7 +40,7 @@ return (
 <div ref={drop} className="list-location">
 {workflows?.map((i)=>{
 if(i.order===listOrder){
- return <WorkflowList lists={workflows} listOrder={i.order} boardId={boardId} key={i.id} id={i.id} cardItems={i.cards} description={i.description} setIsPostingCardDetails={setIsPostingCardDetails}/>
+ return <WorkflowList lists={workflows} listOrder={i.order} boardId={boardId} key={i.id} id={i.id} cardItems={i.cards} description={i.description}/>
 }
 
 })}
